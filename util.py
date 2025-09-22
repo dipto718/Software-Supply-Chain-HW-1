@@ -47,6 +47,8 @@ def verify_artifact_signature(signature, public_key, artifact_filename):
     with open(artifact_filename, "rb") as data_file:
         data = data_file.read()
 
+    valid = True;
+
     # verify the signature
     try:
         public_key.verify(
@@ -55,6 +57,10 @@ def verify_artifact_signature(signature, public_key, artifact_filename):
             ec.ECDSA(hashes.SHA256())
         )
     except InvalidSignature as e:
+        valid = False
         print("Signature is invalid")
     except Exception as e:
+        valid = False
         print("Exception in verifying artifact signature:", e)
+    if valid:
+        print("Signature is valid")
