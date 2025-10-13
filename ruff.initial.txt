@@ -1,0 +1,92 @@
+E722 Do not use bare `except`
+  --> main.py:36:5
+   |
+34 |         data = requests.get(request_url)
+35 |         data.raise_for_status()
+36 |     except:
+   |     ^^^^^^
+37 |         sys.exit("Error: The log index was not sane\n")
+38 |     # if there was no exception, converts the data to a json
+   |
+
+E712 Avoid inequality comparisons to `True`; use `not ...:` for false checks
+  --> main.py:61:8
+   |
+59 |       # its not sane if either the artifact doesn't exist
+60 |       # or if its not a valid file
+61 |       if (
+   |  ________^
+62 | |         os.path.exists(artifact_filepath) and os.path.isfile(artifact_filepath)
+63 | |     ) != True:
+   | |_____________^
+64 |           print("Error: The filepath is not sane")
+65 |           return
+   |
+help: Replace comparison
+
+E722 Do not use bare `except`
+  --> main.py:86:5
+   |
+84 |     try:
+85 |         pk = extract_public_key(cert_decoded)
+86 |     except:
+   |     ^^^^^^
+87 |         sys.exit("Error: Extracting the public key failed\n")
+   |
+
+E722 Do not use bare `except`
+   --> main.py:102:5
+    |
+100 |     try:
+101 |         leaf_hash = compute_leaf_hash(body)
+102 |     except:
+    |     ^^^^^^
+103 |         sys.exit("Error: Computing the leaf hash failed\n")
+    |
+
+E722 Do not use bare `except`
+   --> main.py:117:5
+    |
+115 |             ver_proof["rootHash"],
+116 |         )
+117 |     except:
+    |     ^^^^^^
+118 |         sys.exit("Inclusion verification failed\n")
+119 |     print("Offline root hash calculation for inclusion verified")
+    |
+
+E722 Do not use bare `except`
+   --> main.py:138:5
+    |
+136 |         request = requests.get(request_url)
+137 |         request.raise_for_status()
+138 |     except:
+    |     ^^^^^^
+139 |         sys.exit("Error: Getting the latest checkpoint failed\n")
+140 |     data = request.json()
+    |
+
+E722 Do not use bare `except`
+   --> main.py:173:5
+    |
+171 |         request = requests.get(request_url)
+172 |         request.raise_for_status()
+173 |     except:
+    |     ^^^^^^
+174 |         sys.exit("Error: The request to get the proof failed")
+175 |     proof = (request.json())["hashes"]
+    |
+
+E722 Do not use bare `except`
+   --> main.py:193:5
+    |
+191 |             root2,
+192 |         )
+193 |     except:
+    |     ^^^^^^
+194 |         sys.exit("Consitency verification failed")
+195 |     # if no mismatch errors were raised then the
+    |
+
+Found 8 errors.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

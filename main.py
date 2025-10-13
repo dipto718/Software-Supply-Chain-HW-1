@@ -33,7 +33,7 @@ def get_log_entry(log_index, debug=False):
     try:
         data = requests.get(request_url)
         data.raise_for_status()
-    except:
+    except Exception:
         sys.exit("Error: The log index was not sane\n")
     # if there was no exception, converts the data to a json
     # format and returns it
@@ -58,9 +58,8 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # verify that the artifact filepath is sane
     # its not sane if either the artifact doesn't exist
     # or if its not a valid file
-    if (
-        os.path.exists(artifact_filepath) and os.path.isfile(artifact_filepath)
-    ) != True:
+    if (not (os.path.exists(artifact_filepath) and \
+        os.path.isfile(artifact_filepath))):
         print("Error: The filepath is not sane")
         return
 
@@ -83,7 +82,7 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # extracts the public key from the certificate
     try:
         pk = extract_public_key(cert_decoded)
-    except:
+    except Exception:
         sys.exit("Error: Extracting the public key failed\n")
 
     # verify_artifact_signature(signature, public_key, artifact_filepath)
@@ -99,7 +98,7 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # the original body as compute_leaf_hash does the decoding itself
     try:
         leaf_hash = compute_leaf_hash(body)
-    except:
+    except Exception:
         sys.exit("Error: Computing the leaf hash failed\n")
 
     # verify_inclusion(DefaultHasher, index, tree_size,
@@ -114,7 +113,7 @@ def inclusion(log_index, artifact_filepath, debug=False):
             ver_proof["hashes"],
             ver_proof["rootHash"],
         )
-    except:
+    except Exception:
         sys.exit("Inclusion verification failed\n")
     print("Offline root hash calculation for inclusion verified")
 
@@ -135,7 +134,7 @@ def get_latest_checkpoint(debug=False):
     try:
         request = requests.get(request_url)
         request.raise_for_status()
-    except:
+    except Exception:
         sys.exit("Error: Getting the latest checkpoint failed\n")
     data = request.json()
 
@@ -170,7 +169,7 @@ def consistency(prev_checkpoint, debug=False):
     try:
         request = requests.get(request_url)
         request.raise_for_status()
-    except:
+    except Exception:
         sys.exit("Error: The request to get the proof failed")
     proof = (request.json())["hashes"]
 
@@ -190,7 +189,7 @@ def consistency(prev_checkpoint, debug=False):
             prev_checkpoint["rootHash"],
             root2,
         )
-    except:
+    except Exception:
         sys.exit("Consitency verification failed")
     # if no mismatch errors were raised then the
     # previous checkpoint is consistent
@@ -202,7 +201,8 @@ def main():
     debug = False
     parser = argparse.ArgumentParser(description="Rekor Verifier")
     parser.add_argument(
-        "-d", "--debug", help="Debug mode", required=False, action="store_true"
+        "-d", "--debug", help="Debug mode", required=False, \
+        action="store_true"
     )  # Default false
     parser.add_argument(
         "-c",
@@ -237,10 +237,12 @@ def main():
         "--tree-id", help="Tree ID for consistency proof", required=False
     )
     parser.add_argument(
-        "--tree-size", help="Tree size for consistency proof", required=False, type=int
+        "--tree-size", help="Tree size for consistency proof", \
+        required=False, type=int
     )
     parser.add_argument(
-        "--root-hash", help="Root hash for consistency proof", required=False
+        "--root-hash", help="Root hash for consistency proof", \
+        required=False
     )
     args = parser.parse_args()
     if args.debug:
