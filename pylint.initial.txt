@@ -1,0 +1,27 @@
+************* Module main
+main.py:61:0: C0325: Unnecessary parens after 'if' keyword (superfluous-parens)
+main.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+main.py:36:11: W0718: Catching too general exception Exception (broad-exception-caught)
+main.py:34:15: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
+main.py:16:29: W0613: Unused argument 'debug' (unused-argument)
+main.py:43:38: W0613: Unused argument 'debug' (unused-argument)
+main.py:85:11: W0718: Catching too general exception Exception (broad-exception-caught)
+main.py:101:11: W0718: Catching too general exception Exception (broad-exception-caught)
+main.py:116:11: W0718: Catching too general exception Exception (broad-exception-caught)
+main.py:52:44: W0613: Unused argument 'debug' (unused-argument)
+main.py:137:11: W0718: Catching too general exception Exception (broad-exception-caught)
+main.py:135:18: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
+main.py:121:26: W0613: Unused argument 'debug' (unused-argument)
+main.py:172:11: W0718: Catching too general exception Exception (broad-exception-caught)
+main.py:170:18: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
+main.py:182:4: C0103: Variable name "lastSize" doesn't conform to snake_case naming style (invalid-name)
+main.py:192:11: W0718: Catching too general exception Exception (broad-exception-caught)
+main.py:145:33: W0613: Unused argument 'debug' (unused-argument)
+main.py:200:0: C0116: Missing function or method docstring (missing-function-docstring)
+main.py:4:0: C0411: standard import "import os" should be placed before "import requests" (wrong-import-order)
+main.py:5:0: C0411: standard import "import sys" should be placed before "import requests" (wrong-import-order)
+main.py:6:0: C0411: standard import "import base64" should be placed before "import requests" (wrong-import-order)
+
+-----------------------------------
+Your code has been rated at 8.04/10
+
