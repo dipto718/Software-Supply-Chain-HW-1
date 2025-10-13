@@ -96,6 +96,7 @@ def get_latest_checkpoint(debug=False):
     # a json format so that it can be displayed when
     # python main.py -c is done
     data = requests.get(request_url).json()
+    data.raise_for_status()
 
     # returns the checkpoint
     return data
@@ -123,6 +124,7 @@ def consistency(prev_checkpoint, debug=False):
 
     # gets the proof
     proof = (requests.get(request_url).json())["hashes"]
+    proof.raise_for_status()
 
     # extracts the other root hash from the current checkpoint
     root2 = curr_checkpoint["rootHash"]
