@@ -1,9 +1,10 @@
-import argparse
-import json
-import requests
+"""Perfroms various operations with the rekor api"""
 import os
 import sys
 import base64
+import argparse
+import json
+import requests
 from util import extract_public_key, verify_artifact_signature
 from merkle_proof import (
     DefaultHasher,
@@ -13,7 +14,7 @@ from merkle_proof import (
 )
 
 
-def get_log_entry(log_index, debug=False):
+def get_log_entry(log_index):
     """returns the log entry in json format"""
 
     # from the rekor api /api/v1/log/entries is used to get the
@@ -31,16 +32,20 @@ def get_log_entry(log_index, debug=False):
     # indicates that the request was a failure and therefore raise_for_status
     # from the request import would raise an exception
     try:
-        data = requests.get(request_url)
+        data = requests.get(request_url, timeout=3)
         data.raise_for_status()
-    except Exception:
+    except requests.exceptions.Timeout:
+        sys.exit("Error: The request timed out\n")
+    # raise for status raises this type of exception
+    # upon a bad HTTP request
+    except requests.exceptions.HTTPError:
         sys.exit("Error: The log index was not sane\n")
     # if there was no exception, converts the data to a json
     # format and returns it
     return data.json()
 
 
-def get_verification_proof(log_index, debug=False):
+def get_verification_proof(log_index):
     """returns the inculsion proof"""
 
     # gets the log entry in json format
@@ -49,7 +54,7 @@ def get_verification_proof(log_index, debug=False):
     return (list(data_json.values())[0])["verification"]["inclusionProof"]
 
 
-def inclusion(log_index, artifact_filepath, debug=False):
+def inclusion(log_index, artifact_filepath):
     """ "verifies inclusion"""
 
     # gets the log entry in json format
@@ -58,8 +63,8 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # verify that the artifact filepath is sane
     # its not sane if either the artifact doesn't exist
     # or if its not a valid file
-    if (not (os.path.exists(artifact_filepath) and \
-        os.path.isfile(artifact_filepath))):
+    if not (os.path.exists(artifact_filepath) and \
+        os.path.isfile(artifact_filepath)):
         print("Error: The filepath is not sane")
         return
 
@@ -82,7 +87,7 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # extracts the public key from the certificate
     try:
         pk = extract_public_key(cert_decoded)
-    except Exception:
+    except ValueError:
         sys.exit("Error: Extracting the public key failed\n")
 
     # verify_artifact_signature(signature, public_key, artifact_filepath)
@@ -98,7 +103,9 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # the original body as compute_leaf_hash does the decoding itself
     try:
         leaf_hash = compute_leaf_hash(body)
-    except Exception:
+    except TypeError:
+        sys.exit("Error: Computing the leaf hash failed\n")
+    except ValueError:
         sys.exit("Error: Computing the leaf hash failed\n")
 
     # verify_inclusion(DefaultHasher, index, tree_size,
@@ -113,12 +120,12 @@ def inclusion(log_index, artifact_filepath, debug=False):
             ver_proof["hashes"],
             ver_proof["rootHash"],
         )
-    except Exception:
+    except ValueError:
         sys.exit("Inclusion verification failed\n")
     print("Offline root hash calculation for inclusion verified")
 
 
-def get_latest_checkpoint(debug=False):
+def get_latest_checkpoint():
     """gets the latest checkpoint"""
 
     # from the rekor api /api/v1/log is used to get the current state
@@ -132,9 +139,13 @@ def get_latest_checkpoint(debug=False):
     # a json format so that it can be displayed when
     # python main.py -c is done\
     try:
-        request = requests.get(request_url)
+        request = requests.get(request_url, timeout=3)
         request.raise_for_status()
-    except Exception:
+    except requests.exceptions.Timeout:
+        sys.exit("Error: The request timed out\n")
+    # raise for status raises this type of exception
+    # upon a bad HTTP request
+    except requests.exceptions.HTTPError:
         sys.exit("Error: Getting the latest checkpoint failed\n")
     data = request.json()
 
@@ -142,7 +153,7 @@ def get_latest_checkpoint(debug=False):
     return data
 
 
-def consistency(prev_checkpoint, debug=False):
+def consistency(prev_checkpoint,):
     """
     verifies whether a previous checkpoint is
     consitent with the current one
@@ -167,9 +178,13 @@ def consistency(prev_checkpoint, debug=False):
 
     # gets the proof
     try:
-        request = requests.get(request_url)
+        request = requests.get(request_url, timeout=3)
         request.raise_for_status()
-    except Exception:
+    except requests.exceptions.Timeout:
+        sys.exit("Error: The request timed out\n")
+    # raise for status raises this type of exception
+    # upon a bad HTTP request
+    except requests.exceptions.HTTPError:
         sys.exit("Error: The request to get the proof failed")
     proof = (request.json())["hashes"]
 
@@ -179,17 +194,17 @@ def consistency(prev_checkpoint, debug=False):
     # uses the default hasher
     # verifies consistency with the function provided
     # in the template
-    lastSize = curr_checkpoint["treeSize"]
+    last_size = curr_checkpoint["treeSize"]
     try:
         verify_consistency(
             DefaultHasher,
             prev_checkpoint["treeSize"],
-            lastSize,
+            last_size,
             proof,
             prev_checkpoint["rootHash"],
             root2,
         )
-    except Exception:
+    except ValueError:
         sys.exit("Consitency verification failed")
     # if no mismatch errors were raised then the
     # previous checkpoint is consistent
@@ -198,7 +213,9 @@ def consistency(prev_checkpoint, debug=False):
 
 
 def main():
-    debug = False
+    """Allows the user to enter commands and perform various 
+    operations with the rekor api and the funtions built into 
+    merkle_proof.py and util.py"""
     parser = argparse.ArgumentParser(description="Rekor Verifier")
     parser.add_argument(
         "-d", "--debug", help="Debug mode", required=False, \
@@ -246,15 +263,14 @@ def main():
     )
     args = parser.parse_args()
     if args.debug:
-        debug = True
         print("enabled debug mode")
     if args.checkpoint:
         # get and print latest checkpoint from server
         # if debug is enabled, store it in a file checkpoint.json
-        checkpoint = get_latest_checkpoint(debug)
+        checkpoint = get_latest_checkpoint()
         print(json.dumps(checkpoint, indent=4))
     if args.inclusion:
-        inclusion(args.inclusion, args.artifact, debug)
+        inclusion(args.inclusion, args.artifact)
     if args.consistency:
         if not args.tree_id:
             print("please specify tree id for prev checkpoint")
@@ -271,7 +287,7 @@ def main():
         prev_checkpoint["treeSize"] = args.tree_size
         prev_checkpoint["rootHash"] = args.root_hash
 
-        consistency(prev_checkpoint, debug)
+        consistency(prev_checkpoint)
 
 
 if __name__ == "__main__":
