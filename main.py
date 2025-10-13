@@ -6,8 +6,9 @@ import base64
 from util import extract_public_key, verify_artifact_signature
 from merkle_proof import DefaultHasher, verify_consistency, verify_inclusion, compute_leaf_hash
 
-# retrns the log entry in json format
+
 def get_log_entry(log_index, debug=False):
+    """returns the log entry in json format """
 
     # from the rekor api /api/v1/log/entries is used to get the
     # log entry by logindex
@@ -26,16 +27,18 @@ def get_log_entry(log_index, debug=False):
     # format and returns it
     return data.json()
 
-# returns the inculsion proof
+
 def get_verification_proof(log_index, debug=False):
+    """returns the inculsion proof"""
    
     # gets the log entry in json format
     data_json = get_log_entry(log_index)
     # returns the proof
     return ((list(data_json.values())[0])["verification"]["inclusionProof"])
     
-# verifies inclsion
 def inclusion(log_index, artifact_filepath, debug=False):
+    """"verifies inclusion"""
+
     # gets the log entry in json format
     data_json = get_log_entry(log_index)
 
@@ -83,8 +86,9 @@ def inclusion(log_index, artifact_filepath, debug=False):
     verify_inclusion(DefaultHasher, ver_proof["logIndex"], ver_proof["treeSize"], leaf_hash, ver_proof["hashes"], ver_proof["rootHash"])
     print("Offline root hash calculation for inclusion verified")
     
-# gets the latest checkpoint
 def get_latest_checkpoint(debug=False):
+    """gets the latest checkpoint"""
+
     # from the rekor api /api/v1/log is used to get the current state
     # of the transparency log aka the latest checkpoint
 
@@ -101,9 +105,10 @@ def get_latest_checkpoint(debug=False):
     # returns the checkpoint
     return data
 
-# verifies whether a previous checkpoint is consitent with
-# the current one
+
 def consistency(prev_checkpoint, debug=False):
+    """verifies whether a previous checkpoint is consitent with the current one"""
+
     # verify that prev checkpoint is not empty
     if len(prev_checkpoint) == 0:
         print("previous checkpoint is empty")
