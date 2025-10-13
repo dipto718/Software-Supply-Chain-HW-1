@@ -2,6 +2,7 @@ import argparse
 import json
 import requests
 import os
+import sys
 import base64
 from util import extract_public_key, verify_artifact_signature
 from merkle_proof import DefaultHasher, verify_consistency, \
@@ -25,8 +26,11 @@ def get_log_entry(log_index, debug=False):
     # a status >= 400
     # indicates that the request was a failure and therefore raise_for_status
     # from the request import would raise an exception
-    data = requests.get(request_url)
-    data.raise_for_status()
+    try:
+        data = requests.get(request_url)
+        data.raise_for_status()
+    except:
+        sys.exit("Error: The log index was not sane\n")
     # if there was no exception, converts the data to a json
     # format and returns it
     return data.json()
@@ -52,7 +56,7 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # or if its not a valid file
     if ((os.path.exists(artifact_filepath) and \
         os.path.isfile(artifact_filepath)) != True):
-        print("The filepath is not sane")
+        print("Error: The filepath is not sane")
         return
 
     # the raw body needs to be decoded first as it contains the signature
@@ -72,10 +76,14 @@ def inclusion(log_index, artifact_filepath, debug=False):
 
     # extract_public_key(certificate)
     # extracts the public key from the certificate
-    pk = extract_public_key(cert_decoded)
+    try:
+        pk = extract_public_key(cert_decoded)
+    except:
+        sys.exit("Error: Extracting the public key failed\n")
 
     # verify_artifact_signature(signature, public_key, artifact_filepath)
     # verifies that the signature is valid
+    # already catches exceptions
     verify_artifact_signature(sig_decoded, pk, artifact_filepath)
 
     
@@ -85,14 +93,20 @@ def inclusion(log_index, artifact_filepath, debug=False):
 
     # gets the leaf hash which is calculated with
     # the original body as compute_leaf_hash does the decoding itself
-    leaf_hash = compute_leaf_hash(body)
+    try:
+        leaf_hash = compute_leaf_hash(body)
+    except:
+        sys.exit("Error: Computing the leaf hash failed\n")
 
     # verify_inclusion(DefaultHasher, index, tree_size, 
     # leaf_hash, hashes, root_hash)
     # verifies inclusion
-    verify_inclusion(DefaultHasher, ver_proof["logIndex"], \
-    ver_proof["treeSize"], leaf_hash, ver_proof["hashes"], \
-    ver_proof["rootHash"])
+    try:
+        verify_inclusion(DefaultHasher, ver_proof["logIndex"], \
+        ver_proof["treeSize"], leaf_hash, ver_proof["hashes"], \
+        ver_proof["rootHash"])
+    except:
+        sys.exit("Inclusion verification failed\n")
     print("Offline root hash calculation for inclusion verified")
 
 
@@ -108,9 +122,12 @@ def get_latest_checkpoint(debug=False):
 
     # gets the checkpoint from the api and converts it to
     # a json format so that it can be displayed when
-    # python main.py -c is done
-    request = requests.get(request_url)
-    request.raise_for_status()
+    # python main.py -c is done\
+    try:
+        request = requests.get(request_url)
+        request.raise_for_status()
+    except:
+        sys.exit("Error: Getting the latest checkpoint failed\n")
     data = request.json()
 
     # returns the checkpoint
@@ -141,8 +158,11 @@ def consistency(prev_checkpoint, debug=False):
     )
 
     # gets the proof
-    request = requests.get(request_url)
-    request.raise_for_status()
+    try:
+        request = requests.get(request_url)
+        request.raise_for_status()
+    except:
+        sys.exit("Error: The request to get the proof failed")
     proof = (request.json())["hashes"]
     
 
@@ -153,8 +173,11 @@ def consistency(prev_checkpoint, debug=False):
     # verifies consistency with the function provided
     # in the template
     lastSize = curr_checkpoint["treeSize"]
-    verify_consistency(DefaultHasher, prev_checkpoint["treeSize"] , \
-    lastSize, proof, prev_checkpoint["rootHash"], root2)
+    try:
+        verify_consistency(DefaultHasher, prev_checkpoint["treeSize"] , \
+        lastSize, proof, prev_checkpoint["rootHash"], root2)
+    except:
+        sys.exit("Consitency verification failed")
     # if no mismatch errors were raised then the 
     # previous checkpoint is consistent
     # with the current one
