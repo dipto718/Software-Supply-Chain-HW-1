@@ -35,7 +35,8 @@ def get_verification_proof(log_index, debug=False):
     data_json = get_log_entry(log_index)
     # returns the proof
     return ((list(data_json.values())[0])["verification"]["inclusionProof"])
-    
+
+
 def inclusion(log_index, artifact_filepath, debug=False):
     """"verifies inclusion"""
 
@@ -85,7 +86,8 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # verifies inclusion
     verify_inclusion(DefaultHasher, ver_proof["logIndex"], ver_proof["treeSize"], leaf_hash, ver_proof["hashes"], ver_proof["rootHash"])
     print("Offline root hash calculation for inclusion verified")
-    
+
+
 def get_latest_checkpoint(debug=False):
     """gets the latest checkpoint"""
 
@@ -142,6 +144,7 @@ def consistency(prev_checkpoint, debug=False):
     # with the current one
     print("Consistency verification successful")
 
+
 def main():
     debug = False
     parser = argparse.ArgumentParser(description="Rekor Verifier")
@@ -195,6 +198,7 @@ def main():
         prev_checkpoint["rootHash"] = args.root_hash
 
         consistency(prev_checkpoint, debug)
+
 
 if __name__ == "__main__":
     main()
