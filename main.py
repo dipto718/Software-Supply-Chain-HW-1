@@ -133,13 +133,12 @@ def consistency(prev_checkpoint, debug=False):
     curr_checkpoint = get_latest_checkpoint()
 
     # builds the url request for the proof
-    request_url = "https://rekor.sigstore.dev/api/v1/log/proof?firstSize="
-    request_url += str(prev_checkpoint["treeSize"])
-    lastSize = curr_checkpoint["treeSize"]
-    request_url += "&lastSize="
-    request_url += str(lastSize)
-    request_url += "&treeID="
-    request_url += prev_checkpoint["treeID"]
+    request_url = (
+    f"https://rekor.sigstore.dev/api/v1/log/proof?"
+    f"firstSize={prev_checkpoint['treeSize']}&"
+    f"lastSize={curr_checkpoint['treeSize']}&"
+    f"treeID={prev_checkpoint['treeID']}"
+    )
 
     # gets the proof
     request = requests.get(request_url)
@@ -153,6 +152,7 @@ def consistency(prev_checkpoint, debug=False):
     # uses the default hasher
     # verifies consistency with the function provided
     # in the template
+    lastSize = curr_checkpoint["treeSize"]
     verify_consistency(DefaultHasher, prev_checkpoint["treeSize"] , \
     lastSize, proof, prev_checkpoint["rootHash"], root2)
     # if no mismatch errors were raised then the 
