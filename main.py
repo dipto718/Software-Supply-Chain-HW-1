@@ -1,4 +1,5 @@
 """Perfroms various operations with the rekor api"""
+
 import os
 import sys
 import base64
@@ -63,8 +64,7 @@ def inclusion(log_index, artifact_filepath):
     # verify that the artifact filepath is sane
     # its not sane if either the artifact doesn't exist
     # or if its not a valid file
-    if not (os.path.exists(artifact_filepath) and \
-        os.path.isfile(artifact_filepath)):
+    if not (os.path.exists(artifact_filepath) and os.path.isfile(artifact_filepath)):
         print("Error: The filepath is not sane")
         return
 
@@ -153,7 +153,9 @@ def get_latest_checkpoint():
     return data
 
 
-def consistency(prev_checkpoint,):
+def consistency(
+    prev_checkpoint,
+):
     """
     verifies whether a previous checkpoint is
     consitent with the current one
@@ -213,13 +215,12 @@ def consistency(prev_checkpoint,):
 
 
 def main():
-    """Allows the user to enter commands and perform various 
-    operations with the rekor api and the funtions built into 
+    """Allows the user to enter commands and perform various
+    operations with the rekor api and the funtions built into
     merkle_proof.py and util.py"""
     parser = argparse.ArgumentParser(description="Rekor Verifier")
     parser.add_argument(
-        "-d", "--debug", help="Debug mode", required=False, \
-        action="store_true"
+        "-d", "--debug", help="Debug mode", required=False, action="store_true"
     )  # Default false
     parser.add_argument(
         "-c",
@@ -254,12 +255,10 @@ def main():
         "--tree-id", help="Tree ID for consistency proof", required=False
     )
     parser.add_argument(
-        "--tree-size", help="Tree size for consistency proof", \
-        required=False, type=int
+        "--tree-size", help="Tree size for consistency proof", required=False, type=int
     )
     parser.add_argument(
-        "--root-hash", help="Root hash for consistency proof", \
-        required=False
+        "--root-hash", help="Root hash for consistency proof", required=False
     )
     args = parser.parse_args()
     if args.debug:
