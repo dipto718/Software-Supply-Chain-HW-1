@@ -4,7 +4,8 @@ import requests
 import os
 import base64
 from util import extract_public_key, verify_artifact_signature
-from merkle_proof import DefaultHasher, verify_consistency, verify_inclusion, compute_leaf_hash
+from merkle_proof import DefaultHasher, verify_consistency, \
+verify_inclusion, compute_leaf_hash
 
 
 def get_log_entry(log_index, debug=False):
@@ -12,13 +13,16 @@ def get_log_entry(log_index, debug=False):
 
     # from the rekor api /api/v1/log/entries is used to get the
     # log entry by logindex
-    #?logindex= is needed as otherwise going to https://rekor.sigstore.dev/api/v1/log/entries
-    # gives code 602 and states how the logindex is needed for the query to be done
+    #?logindex= is needed as otherwise going to 
+    # https://rekor.sigstore.dev/api/v1/log/entries
+    # gives code 602 and states how the logindex is 
+    # needed for the query to be done
     # constructs the rl for the request
     request_url = "https://rekor.sigstore.dev/api/v1/log/entries?logIndex="
     request_url += str(log_index)
     # verify that log index value is sane and returns the log entry if it is
-    # this is determined by the status code for the request as a status >= 400
+    # this is determined by the status code for the request as 
+    # a status >= 400
     # indicates that the request was a failure and therefore raise_for_status
     # from the request import would raise an exception
     data = requests.get(request_url)
@@ -46,11 +50,12 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # verify that the artifact filepath is sane
     # its not sane if either the artifact doesn't exist
     # or if its not a valid file
-    if ((os.path.exists(artifact_filepath) and os.path.isfile(artifact_filepath)) != True):
+    if ((os.path.exists(artifact_filepath) and \
+        os.path.isfile(artifact_filepath)) != True):
         print("The filepath is not sane")
         return
 
-    # the raw body needs to be decoded first as it contains the signature 
+    # the raw body needs to be decoded first as it contains the signature
     # as can be seen by the file stucture on search.sigstore.dev
     # it then needs to be made into json again for ease of use
     list_body = list(data_json.values())[0]
@@ -82,9 +87,12 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # the original body as compute_leaf_hash does the decoding itself
     leaf_hash = compute_leaf_hash(body)
 
-    # verify_inclusion(DefaultHasher, index, tree_size, leaf_hash, hashes, root_hash)
+    # verify_inclusion(DefaultHasher, index, tree_size, 
+    # leaf_hash, hashes, root_hash)
     # verifies inclusion
-    verify_inclusion(DefaultHasher, ver_proof["logIndex"], ver_proof["treeSize"], leaf_hash, ver_proof["hashes"], ver_proof["rootHash"])
+    verify_inclusion(DefaultHasher, ver_proof["logIndex"], \
+    ver_proof["treeSize"], leaf_hash, ver_proof["hashes"], \
+    ver_proof["rootHash"])
     print("Offline root hash calculation for inclusion verified")
 
 
@@ -101,15 +109,19 @@ def get_latest_checkpoint(debug=False):
     # gets the checkpoint from the api and converts it to
     # a json format so that it can be displayed when
     # python main.py -c is done
-    data = requests.get(request_url).json()
-    data.raise_for_status()
+    request = requests.get(request_url)
+    request.raise_for_status()
+    data = request.json()
 
     # returns the checkpoint
     return data
 
 
 def consistency(prev_checkpoint, debug=False):
-    """verifies whether a previous checkpoint is consitent with the current one"""
+    """
+    verifies whether a previous checkpoint is 
+    consitent with the current one
+    """
 
     # verify that prev checkpoint is not empty
     if len(prev_checkpoint) == 0:
@@ -130,8 +142,10 @@ def consistency(prev_checkpoint, debug=False):
     request_url += prev_checkpoint["treeID"]
 
     # gets the proof
-    proof = (requests.get(request_url).json())["hashes"]
-    proof.raise_for_status()
+    request = requests.get(request_url)
+    request.raise_for_status()
+    proof = (request.json())["hashes"]
+    
 
     # extracts the other root hash from the current checkpoint
     root2 = curr_checkpoint["rootHash"]
@@ -139,8 +153,10 @@ def consistency(prev_checkpoint, debug=False):
     # uses the default hasher
     # verifies consistency with the function provided
     # in the template
-    verify_consistency(DefaultHasher, prev_checkpoint["treeSize"] , lastSize, proof, prev_checkpoint["rootHash"], root2)
-    # if no mismatch errors were raised then the previous checkpoint is consistent
+    verify_consistency(DefaultHasher, prev_checkpoint["treeSize"] , \
+    lastSize, proof, prev_checkpoint["rootHash"], root2)
+    # if no mismatch errors were raised then the 
+    # previous checkpoint is consistent
     # with the current one
     print("Consistency verification successful")
 
