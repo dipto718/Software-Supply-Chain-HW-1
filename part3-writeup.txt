@@ -1,0 +1,21 @@
+I first installed git-filter-repo by cloning the repo and then
+and then adding it to path. Installation was verified with --version.
+Commands:
+git clone https://github.com/newren/git-filter-repo.git
+cd git-filter-repo
+sudo cp git-filter-repo /usr/local/bin/
+git filter-repo --version
+
+I then removed personal.txt with the following command:
+git filter-repo --invert-paths --path personal.txt --force
+
+I then temporarily disabled the branch protections I did
+to execute the push to the remote repo. I also had to add back 
+https://github.com/dipto718/Software-Supply-Chain-HW-1.git
+as the origin as the previous command seemed to have deleted
+it. The push had to be run with --force as it was intially
+rejected likely because of the operations filter-repo had to
+do to remove personal.txt from the commit history.
+Commands:
+git remote add origin https://github.com/dipto718/Software-Supply-Chain-HW-1.git
+git push origin main --force
