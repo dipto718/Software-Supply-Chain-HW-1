@@ -13,7 +13,7 @@ emailing me.
 
 Issues can be be reported in the security tab as
 detailed in the reporting vulnerabilities section
-of security.md. However, if the issue is major enough 
+of security.md. However, if the issue is major enough
 it is appropriate to email me at ssd410@nyu.edu about it
 so long as you are an approved contributer to the project.
 Non-contributers are subject to having their email addresses

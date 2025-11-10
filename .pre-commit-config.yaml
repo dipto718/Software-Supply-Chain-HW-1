@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: trufflehog
+        name: truffle hog scanner
+        # run while in the local github repo
+        entry: bash -c 'sudo trufflehog git file://. --since-commit HEAD --no-verification --fail'
+        language: system
+        stages: ["commit", "push", "pre-commit", "pre-push"]

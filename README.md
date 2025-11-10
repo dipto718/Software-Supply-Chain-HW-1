@@ -14,7 +14,7 @@ in the instructions. It must then be signed with the command
 "cosign sign-blod artifact.md --bundle artifact.bundle".
 Now to use the project you just need to enter "python
 main.py" along with the appropriate command afterwards
-for the action you are doing. For example, "python main.py 
+for the action you are doing. For example, "python main.py
 -c" would get the latest entry from the rekor transparency log.
 # Installation instructions
 To run the project itself, only cosign and python need

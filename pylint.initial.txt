@@ -24,4 +24,3 @@ main.py:6:0: C0411: standard import "import base64" should be placed before "imp
 
 -----------------------------------
 Your code has been rated at 8.04/10
-
