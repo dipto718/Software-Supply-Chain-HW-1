@@ -24,6 +24,9 @@ dependencies = [
     "cyclonedx-bom (>=7.2.1,<8.0.0)"
 ]
 
+[tool.poetry]
+packages = [{include = "software-supply-chain-hw-1", from = "src"}]
+
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
