@@ -5,3 +5,4 @@ venv
 myenv
 .pytest_cache
 .coverage
+dist
