@@ -41,8 +41,8 @@ jobs:
       - name: Format with Ruff
         run: poetry run ruff format
 
-      # - name: Lint with Ruff
-      #   run: poetry run ruff check
+      - name: Lint with Ruff
+        run: poetry run ruff check
 
       # - name: Lint with pylint
       #   run: poetry run pylint .
