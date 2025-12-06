@@ -15,10 +15,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      # - name: Setup Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     Python-version: '3.12.3'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          Python-version: '3.12.3'
+        run: python --version
 
       # - name: Install Poetry
       #   uses: snok/install-poetry@v1
