@@ -38,8 +38,8 @@ jobs:
       - name: Installs the dependencies
         run: poetry install --no-interaction
 
-      # - name: Format with Ruff
-      #   run: poetry run ruff format
+      - name: Format with Ruff
+        run: poetry run ruff format
 
       # - name: Lint with Ruff
       #   run: poetry run ruff check
