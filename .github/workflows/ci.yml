@@ -35,8 +35,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-poetry-
 
-      # - name: Installs the dependencies
-      #   run: poetry install --no-interaction
+      - name: Installs the dependencies
+        run: poetry install --no-interaction
 
       # - name: Format with Ruff
       #   run: poetry run ruff format
