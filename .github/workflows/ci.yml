@@ -56,5 +56,5 @@ jobs:
       - name: Scan Secrets with TruffleHog
         uses: trufflesecurity/trufflehog@main
 
-      - name: Run tests and generate coverage report
-        uses: poetry run pytest --cov=.
+      - name: Runs tests and generate coverage report
+        run: poetry run pytest --cov=.
