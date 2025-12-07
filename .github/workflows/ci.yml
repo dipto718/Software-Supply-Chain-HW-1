@@ -53,8 +53,8 @@ jobs:
       - name: Run Bandit SAST
         run: poetry run bandit -r src/software-supply-chain-hw-1/main.py
 
-      # - name: Scan Secrets with TruffleHog
-      #   uses: trufflesecurity/trufflehog@main
+      - name: Scan Secrets with TruffleHog
+        uses: trufflesecurity/trufflehog@main
 
       # - name: Run tests and generate coverage report
       #   uses: poetry run pytest --cov=.
