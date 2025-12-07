@@ -47,7 +47,7 @@ jobs:
       - name: attest the SBOM
         uses: actions/attest-sbom@v3
         with:
-          #subject-path: ./dist
+          subject-path: ./dist
           sbom-path: sbom.json
 
       - name: upload SBOM attestation
