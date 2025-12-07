@@ -42,16 +42,16 @@ jobs:
         run: poetry run ruff format
 
       - name: Lint with Ruff
-        run: poetry run ruff check
+        run: poetry run ruff check src/software-supply-chain-hw-1/main.py
 
-      # - name: Lint with pylint
-      #   run: poetry run pylint .
+      - name: Lint with pylint
+        run: poetry run pylint src/software-supply-chain-hw-1/main.py
 
       # - name: Type check with mypy
-      #   run: poetry run mypy main.py merkle_proof.py util.py
+      #   run: poetry run mypy main.py
 
       # - name: Run Bandit SAST
-      #   run: poetry run bandit -r .
+      #   run: poetry run bandit -r src/software-supply-chain-hw-1/main.py
 
       # - name: Scan Secrets with TruffleHog
       #   uses: trufflesecurity/trufflehog@main
