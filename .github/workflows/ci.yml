@@ -48,7 +48,7 @@ jobs:
         run: poetry run pylint src/software-supply-chain-hw-1/main.py
 
       - name: Type check with mypy
-        run: poetry run mypy main.py
+        run: poetry run mypy src/software-supply-chain-hw-1/main.py
 
       - name: Run Bandit SAST
         run: poetry run bandit -r src/software-supply-chain-hw-1/main.py
