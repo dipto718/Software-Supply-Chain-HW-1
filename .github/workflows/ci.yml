@@ -47,11 +47,11 @@ jobs:
       - name: Lint with pylint
         run: poetry run pylint src/software-supply-chain-hw-1/main.py
 
-      # - name: Type check with mypy
-      #   run: poetry run mypy main.py
+      - name: Type check with mypy
+        run: poetry run mypy main.py
 
-      # - name: Run Bandit SAST
-      #   run: poetry run bandit -r src/software-supply-chain-hw-1/main.py
+      - name: Run Bandit SAST
+        run: poetry run bandit -r src/software-supply-chain-hw-1/main.py
 
       # - name: Scan Secrets with TruffleHog
       #   uses: trufflesecurity/trufflehog@main
