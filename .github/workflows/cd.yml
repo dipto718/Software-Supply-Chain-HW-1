@@ -53,7 +53,8 @@ jobs:
 
       - name: creates the github release
         uses: softprops/action-gh-release@v1
-        files: |
-          dist/*.whl
-          dist/*.tar.gz
-          sbom.json
+        with:
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+            sbom.json
