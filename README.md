@@ -1,5 +1,6 @@
 [![Continuous deployment](https://github.com/dipto718/Software-Supply-Chain-HW-1/actions/workflows/cd.yml/badge.svg)](https://github.com/dipto718/Software-Supply-Chain-HW-1/actions/workflows/cd.yml)
 [![Continuous Integration](https://github.com/dipto718/Software-Supply-Chain-HW-1/actions/workflows/ci.yml/badge.svg)](https://github.com/dipto718/Software-Supply-Chain-HW-1/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/{owner}/{repo}/badge)](https://scorecard.dev/viewer/?uri=github.com/{owner}/{repo})
 # Software Supply Chain HW Description
 To build this project I downloaded the template from
 github.com/mayank-ramnani/python-rekor-monitor-template
