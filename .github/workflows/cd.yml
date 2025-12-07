@@ -51,8 +51,9 @@ jobs:
           subject-path: ./dist
           sbom-path: sbom.json
 
-      - name: upload SBOM attestation
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-attestation
-          path: ${RUNNER_TEMP}/created_attestation_paths.txt
+      - name: creates the github release
+        uses: softprops/action-gh-release@v1
+        files: |
+          dist/*.whl
+          dist/*.tar.gz
+          sbom.json
