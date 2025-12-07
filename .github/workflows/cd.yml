@@ -45,7 +45,7 @@ jobs:
       - name: Generate SBOM
         run: poetry run cyclonedx-py poetry -o sbom.json --of json
 
-      - name: attest the SBOM
+      - name: attest the SBOM and uploads the attestation
         uses: actions/attest-sbom@v3
         with:
           subject-path: ./dist
@@ -55,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sbom-attestation
-          path: ${{ env.RUNNER_TEMP }}/created_attestation_paths.txt
+          path: ${RUNNER_TEMP}/created_attestation_paths.txt
