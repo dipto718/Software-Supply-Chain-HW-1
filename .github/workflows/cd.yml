@@ -1,0 +1,54 @@
+name: Continuous deployment
+
+on:
+  push:
+    tags:
+      - 'v**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5 
+        with:
+          python-version: '3.12.3'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 'latest'
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load Cached Poetry Virtual Environment
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Installs the dependencies
+        run: poetry install --no-interaction
+
+      - name: Build the Project using Poetry
+        run: poetry build
+
+      - name: Generate SBOM
+        run: poetry run cyclonedx-py -o sbom.json --of json
+
+      - name: attest the SBOM
+        uses: actions/attest-sbom@v3
+        with:
+          #subject-path: ./dist
+          sbom-path: sbom.json
+
+      - name: upload SBOM attestation
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-attestation
+          path: ${{ env.RUNNER_TEMP }}/created_attestation_paths.txt
